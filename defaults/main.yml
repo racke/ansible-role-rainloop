@@ -1,0 +1,6 @@
+---
+# Copyright (C) 2021 Stefan Hornburg (Racke) <racke@linuxia.de>
+# SPDX-License-Identifier: GPL-2.0-or-later
+
+rainloop_unix_user: rainloop
+rainloop_unix_group: "{{ rainloop_unix_user }}"

@@ -1,0 +1,13 @@
+---
+# Copyright (C) 2021 Stefan Hornburg (Racke) <racke@linuxia.de>
+# SPDX-License-Identifier: GPL-2.0-or-later
+
+- name: Create unix group for Rainloop
+  group:
+    name: "{{ rainloop_unix_group }}"
+
+- name: Create unix user for Rainloop
+  user:
+    name: "{{ rainloop_unix_user }}"
+    group: "{{ rainloop_unix_group }}"
+    password_lock: yes
