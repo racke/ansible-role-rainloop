@@ -19,3 +19,8 @@
     owner: "{{ rainloop_unix_user }}"
     group: "{{ rainloop_unix_group }}"
     mode: "{{ rainloop_directory_mode }}"
+
+- name: Download Rainloop archive
+  get_url:
+    url: "https://github.com/RainLoop/rainloop-webmail/releases/download/v{{ rainloop_version }}/rainloop-community-{{ rainloop_version }}.zip"
+    dest: "/usr/local/src"

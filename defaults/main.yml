@@ -5,5 +5,6 @@
 rainloop_unix_user: rainloop
 rainloop_unix_group: "{{ rainloop_unix_user }}"
 
+rainloop_version: 1.16.0
 rainloop_directory: /var/www/rainloop
 rainloop_directory_mode: '0750'
