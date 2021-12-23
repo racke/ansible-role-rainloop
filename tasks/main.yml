@@ -11,3 +11,11 @@
     name: "{{ rainloop_unix_user }}"
     group: "{{ rainloop_unix_group }}"
     password_lock: yes
+
+- name: Create installation directory
+  file:
+    state: directory
+    path: "{{ rainloop_directory }}"
+    owner: "{{ rainloop_unix_user }}"
+    group: "{{ rainloop_unix_group }}"
+    mode: "{{ rainloop_directory_mode }}"
