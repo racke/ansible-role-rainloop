@@ -20,11 +20,48 @@
     group: "{{ rainloop_unix_group }}"
     mode: "{{ rainloop_directory_mode }}"
 
+- name: Check whether file with version information is present
+  stat:
+    path: "{{ rainloop_version_file }}"
+  register: rainloop_version_file_result
+
+- name: Retrieve file with version information
+  slurp:
+    src: "{{ rainloop_version_file }}"
+  when: rainloop_version_file_result.stat.exists
+  register: rainloop_version_slurp
+
+- name: Determine version number for existing installations
+  set_fact:
+    rainloop_installed_version: "{{ rainloop_version_slurp['content'] | b64decode }}"
+  when: rainloop_version_file_result.stat.exists
+
+- name: Create directory for the archive (Alpine)
+  file:
+    state: directory
+    path: /usr/local/src
+    owner: root
+    group: root
+  when: ansible_os_family == 'Alpine'
+
 - name: Download Rainloop archive
   get_url:
     url: "https://github.com/RainLoop/rainloop-webmail/releases/download/v{{ rainloop_version }}/rainloop-community-{{ rainloop_version }}.zip"
-    dest: "/usr/local/src"
+    dest: "/usr/local/src/rainloop-community-{{ rainloop_version }}.zip"
+  when: rainloop_version is version(rainloop_installed_version | default('0'), '>')
 
 - name: Install unzip
   package:
     name: unzip
+  when: rainloop_version is version(rainloop_installed_version | default('0'), '>')
+
+- name: Unpack Rainloop archive
+  unarchive:
+    src: "/usr/local/src/rainloop-community-{{ rainloop_version }}.zip"
+    dest: "{{ rainloop_directory }}"
+    remote_src: yes
+  become_user: "{{ rainloop_unix_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  ignore_errors: "{{ ansible_check_mode }}"
+  when: rainloop_version is version(rainloop_installed_version | default('0'), '>')
